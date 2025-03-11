@@ -27,4 +27,4 @@ For soundcloud it plays directly from them
 
 Can also cache youtube tracks for instant playback if the same file is requested.
 
-still a WIP and done using AI 
+still a WIP and done using AI.
