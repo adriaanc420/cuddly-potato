@@ -1,0 +1,95 @@
+<!-- Save this file as src/main/resources/logback.xml -->
+<configuration>
+    <!-- Console appender for bot status messages only -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>CONSOLE</marker>
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    
+    <!-- File appender for all logs -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/bot.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/bot.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{guild} %X{user} %X{command} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Audio log file -->
+    <appender name="AUDIO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/audio.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/audio.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Commands log file -->
+    <appender name="COMMANDS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/commands.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/commands.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{guild}] [%X{user}] [%X{command}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Performance log file -->
+    <appender name="PERFORMANCE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/performance.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/performance.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>3</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>PERFORMANCE</marker>
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    
+    <!-- Configure subsystem loggers -->
+    <logger name="MusicBot.Audio" level="INFO" additivity="false">
+        <appender-ref ref="AUDIO_FILE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <logger name="MusicBot.Commands" level="INFO" additivity="false">
+        <appender-ref ref="COMMANDS_FILE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Silence all JDA and SLF4J loggers -->
+    <logger name="net.dv8tion.jda" level="ERROR"/>
+    <logger name="org.slf4j" level="ERROR"/>
+    <logger name="io.netty" level="ERROR"/>
+    
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
